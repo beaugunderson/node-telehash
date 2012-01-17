@@ -56,6 +56,11 @@ function incoming(msg, rinfo)
     }
 
     console.log("<--\t"+from+"\t"+msg.toString());
+
+    if (self.incomingCB !== undefined) {
+        self.incomingCB(from, telex);
+    }
+
     // if we're seeded and don't know our identity yet, save it!
     if(self.seedCB && !self.me && telex._to) {
         self.me = slib.getSwitch(telex._to);
@@ -114,6 +119,10 @@ function doConnect(arg, callback)
 
 function doSend(to, telex)
 {
+    if (self.outgoingCB !== undefined) {
+        self.outgoingCB(to, telex);
+    }
+
     // TODO need to check switch first, if its open, via (pop), etc
     var s = slib.getSwitch(to);
     s.send(telex);
